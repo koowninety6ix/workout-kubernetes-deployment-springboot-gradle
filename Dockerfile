@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk
+FROM docker.io/library/openjdk:17-jdk
 
 ARG ENV
 

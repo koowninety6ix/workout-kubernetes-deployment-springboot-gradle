@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: cicd-k8s-pod-springboot-gradle

@@ -16,4 +16,8 @@
 
 ## pipeLine
 
+### jenkins 구성
+
+![image](https://github.com/user-attachments/assets/a075cc6b-5a49-4c35-b190-f56b2d48cfce)
+
 

@@ -20,4 +20,12 @@
 
 ![image](https://github.com/user-attachments/assets/a075cc6b-5a49-4c35-b190-f56b2d48cfce)
 
+### 올려진 구성
 
+![image](https://github.com/user-attachments/assets/008d11eb-f7ca-414f-b5f3-221b52283717)
+
+---
+
+## 결과
+
+![image](https://github.com/user-attachments/assets/19106634-6b45-4e21-8861-aa04166b1548)

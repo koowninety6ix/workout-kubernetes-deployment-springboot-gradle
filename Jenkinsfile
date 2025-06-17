@@ -3,34 +3,33 @@ pipeline {
 
     environment {
         def PROJECT = 'pipeline-springboot-jdk17'
-        def NAMESPACE = 'dev'
         def ENV = 'dev'
     }
-    
+
     stages{
-        stage("SOURCE BUILD"){
+        stage("PROJECT BUILD"){
             steps{
                 sh '/var/jenkins_home/tools/hudson.plugins.gradle.GradleInstallation/gradle-8.13/bin/gradle clean build'
             }
         }
 
-        stage("DOCKER BUILD") {
+        stage("IMAGE BUILD") {
             steps{
-                sh 'podman build --build-arg ENV=$ENV -t ${IMAGE_REPO}/$PROJECT .'
-                sh 'podman push ${IMAGE_REPO}/$PROJECT'
-                sh 'podman rmi ${IMAGE_REPO}/$PROJECT'
+                sh 'podman build --build-arg ENV=$ENV -t ${IMAGE_REPO}/$ENV/$PROJECT .'
+                sh 'podman push ${IMAGE_REPO}/$ENV/$PROJECT'
+                sh 'podman rmi ${IMAGE_REPO}/$ENV/$PROJECT'
             }
         }
 
         stage("DEPLOY"){
             steps{
                 sh 'helm repo update'
-                sh 'helm upgrade --install $PROJECT helm-repo/springchart --create-namespace -n $NAMESPACE --set appName=$PROJECT --set namespace=$NAMESPACE'
+                sh 'helm upgrade --install $PROJECT helm-repo/springchart --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV'
                 sh 'kubectl rollout restart deployment/$PROJECT -n dev'
             }
         }
 
-        stage("CLEAN WORKSPACE"){
+        stage("CLEAN"){
             steps{
                 cleanWs()
             }

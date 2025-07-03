@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        def PROJECT = 'pipeline-springboot-jdk17'
+        def ENV = 'dev'
+    }
+
+    agent {
+        kubernetes {
+          label 'jenkins-agent'
+          defaultContainer 'maven'
+          yaml """
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: maven
+        image: maven:3.9-eclipse-temurin-17
+        command:
+        - cat
+        tty: true
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - cat
+        tty: true
+      - name: jnlp
+        image: jenkins/inbound-agent:latest
+        args:
+        - \$(JENKINS_SECRET)
+        - \$(JENKINS_NAME)
+    """
+        }
+    }
+
+    stages{
+        stage("PROJECT BUILD"){
+            steps{
+                sh '/var/jenkins_home/tools/hudson.plugins.gradle.GradleInstallation/gradle-8.13/bin/gradle clean build'
+            }
+        }
+
+        stage("IMAGE BUILD") {
+            steps{
+                sh 'podman build --build-arg ENV=$ENV -t ${IMAGE_REPO}/$ENV/$PROJECT .'
+                sh 'podman push ${IMAGE_REPO}/$ENV/$PROJECT'
+                sh 'podman rmi ${IMAGE_REPO}/$ENV/$PROJECT'
+            }
+        }
+
+        stage("DEPLOY"){
+            steps{
+                sh 'helm repo update'
+                sh 'helm upgrade --install $PROJECT helm-repo/springchart --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV'
+                sh 'kubectl rollout restart deployment/$PROJECT -n dev'
+            }
+        }
+
+        stage("CLEAN"){
+            steps{
+                cleanWs()
+            }
+        }
+    }
+}

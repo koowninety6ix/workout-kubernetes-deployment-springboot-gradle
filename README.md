@@ -2,7 +2,7 @@
 
 ---
 
-## freeStype
+## FreeStype
 
 ### jenkins 구성
 

@@ -15,16 +15,16 @@ pipeline {
 
         stage("IMAGE BUILD") {
             steps{
-                sh 'podman build --build-arg ENV=$ENV -t ${IMAGE_REPO}/$ENV/$PROJECT .'
-                sh 'podman push ${IMAGE_REPO}/$ENV/$PROJECT'
-                sh 'podman rmi ${IMAGE_REPO}/$ENV/$PROJECT'
+                sh 'podman build --build-arg ENV=$ENV -t ${IMAGE_REPO}/$ENV/$PROJECT:$(git rev-parse --short HEAD) .'
+                sh 'podman push ${IMAGE_REPO}/$ENV/$PROJECT:$(git rev-parse --short HEAD)'
+                sh 'podman rmi ${IMAGE_REPO}/$ENV/$PROJECT:$(git rev-parse --short HEAD)'
             }
         }
 
         stage("DEPLOY"){
             steps{
                 sh 'helm repo update'
-                sh 'helm upgrade $PROJECT helm-repo/springchart --install --atomic --timeout 1m --wait --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV'
+                sh 'helm upgrade $PROJECT helm-repo/springchart --install --atomic --timeout 1m --wait --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV --set image.tag=$(git rev-parse --short HEAD)'
                 sh 'kubectl rollout restart deployment/$PROJECT -n dev'
             }
         }

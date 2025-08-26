@@ -24,7 +24,7 @@ pipeline {
         stage("DEPLOY"){
             steps{
                 sh 'helm repo update'
-                sh 'helm upgrade $PROJECT helm-repo/springchart --install --atomic --timeout 5m --wait --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV'
+                sh 'helm upgrade $PROJECT helm-repo/springchart --install --atomic --timeout 1m --wait --create-namespace -n $ENV --set appName=$PROJECT --set namespace=$ENV'
                 sh 'kubectl rollout restart deployment/$PROJECT -n dev'
             }
         }

@@ -1,3 +1,9 @@
 spring:
   application:
     name: cicd-k8s-pod-springboot-gradle
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics

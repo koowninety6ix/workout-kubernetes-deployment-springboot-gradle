@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cicd-k8s-pod-springboot-gradle
+    name: workout-kubernetes-pod-springboot-gradle
 
 management:
   server:

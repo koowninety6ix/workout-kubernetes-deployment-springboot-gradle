@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        def PROJECT = 'pipeline-springboot-jdk17'
+        def PROJECT = 'workout-kubernetes-deployment-springboot-gradle'
         def ENV = 'dev'
     }
 
@@ -35,4 +35,5 @@ pipeline {
             }
         }
     }
+
 }

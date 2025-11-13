@@ -1,4 +1,4 @@
-FROM docker.io/library/openjdk:17-jdk
+FROM nexus-repo:5000/common/openjdk:17
 
 ARG ENV
 
